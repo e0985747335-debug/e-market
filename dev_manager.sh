@@ -99,6 +99,13 @@ stop) stop_auto ;;
 push) smart_push ;;
 remind) remind_now ;;
 report) generate_report ;;
+auto-push) setup_cron_auto_push ;; 
 help|"") show_help ;;
 *) echo "❌ 未知指令：$1"; show_help ;;
 esac
+setup_cron_auto_push() {
+  CRON_JOB="0 9 * * * cd $(pwd) && ./dev_manager.sh push >> auto_watch.log 2>&1"
+  echo "🕘 設定每日 09:00 自動推送任務..."
+  (crontab -l 2>/dev/null | grep -v "dev_manager.sh push"; echo "$CRON_JOB") | crontab -
+  echo "✅ 已新增 cron 任務！每日早上 09:00 將自動推送開發日誌。"
+}
