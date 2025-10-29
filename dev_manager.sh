@@ -1,13 +1,14 @@
 #!/bin/bash
-# ===================================================
-# 🧩 e-Market 開發管理工具
-# 功能：自動化開發日誌、排程提醒與報告產生
-# ===================================================
+# ============================================
+# 🧩 e-Market 開發管理工具 (v2.0)
+# 功能：集中管理日誌、提醒、自動排程、Git 推送
+# ============================================
 
-PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$HOME/e-market"
 LOG_DIR="$PROJECT_DIR/logs"
+SCRIPT_NAME="dev_manager.sh"
 
-# === [1] 顯示說明 ===
+# === 顯示說明 ===
 show_help() {
   echo "🧩 e-Market 開發管理工具"
   echo "使用方式： ./dev_manager.sh [指令]"
@@ -21,32 +22,40 @@ show_help() {
   echo "  help      - 顯示本說明"
 }
 
-# === [2] 啟動自動排程 ===
+# === 自動化啟動 ===
 start_auto() {
-  CRON_JOB="0 9 * * * bash $PROJECT_DIR/daily_reminder.sh >> $PROJECT_DIR/logs/cron.log 2>&1"
-  (crontab -l 2>/dev/null | grep -v "daily_reminder.sh"; echo "$CRON_JOB") | crontab -
-  echo "✅ 已設定每日早上 9:00 自動提醒與日誌更新。"
+  echo "⏰ 啟動每日自動任務..."
+  (crontab -l 2>/dev/null; echo "0 9 * * * $PROJECT_DIR/daily_reminder.sh") | crontab -
+  echo "✅ 已設定每日 09:00 自動提醒與日誌更新！"
 }
 
-# === [3] 停用排程 ===
+# === 停止所有自動化 ===
 stop_auto() {
-  crontab -l 2>/dev/null | grep -v "daily_reminder.sh" | crontab -
-  echo "🛑 已停用所有自動排程。"
+  echo "🛑 停用所有 e-Market 自動任務..."
+  crontab -l | grep -v "e-market" | crontab -
+  echo "✅ 已清除相關排程。"
 }
 
-# === [4] 即時推送日誌到 GitHub ===
-push_now() {
-  mkdir -p "$LOG_DIR"
-  TODAY_FILE="$LOG_DIR/$(date '+%Y-%m-%d').md"
+# === 今日提醒 ===
+remind_now() {
+  echo "📅 $(date '+%Y-%m-%d %H:%M:%S')"
+  echo "🚀 開工愉快！記得更新開發日誌 🌱"
+}
 
+# === Push 日誌（包含被忽略的 logs） ===
+push_now() {
   echo "🗓 今日日誌檢查中..."
-  if [ ! -f "$TODAY_FILE" ]; then
-    echo "📄 未找到今日開發日誌，正在建立..."
-    echo "# 🧠 開發日誌：$(date '+%Y-%m-%d')" > "$TODAY_FILE"
-    echo "建立於 $(date '+%Y-%m-%d %H:%M:%S')" >> "$TODAY_FILE"
-  else
+
+  TODAY_LOG="$LOG_DIR/$(date '+%Y-%m-%d').md"
+
+  if [ -f "$TODAY_LOG" ]; then
     echo "📝 已存在今日開發日誌，附加更新中..."
-    echo "- 更新時間：$(date '+%Y-%m-%d %H:%M:%S')" >> "$TODAY_FILE"
+    echo "- $(date '+%H:%M:%S') 自動附加更新" >> "$TODAY_LOG"
+  else
+    echo "🆕 建立新開發日誌：$TODAY_LOG"
+    mkdir -p "$LOG_DIR"
+    echo "# 開發日誌 $(date '+%Y-%m-%d')" > "$TODAY_LOG"
+    echo "- 建立時間：$(date '+%H:%M:%S')" >> "$TODAY_LOG"
   fi
 
   echo "🚀 提交更新至 GitHub..."
@@ -54,24 +63,17 @@ push_now() {
   git add -A
   git commit -m "🧠 更新 $(date '+%Y-%m-%d') 開發日誌"
   git push
-
   echo "✅ 已成功推送至 GitHub！"
 }
 
-# === [5] 顯示當日提醒 ===
-remind_now() {
-  echo "📅 $(date '+%Y-%m-%d %H:%M')"
-  echo "💡 今日提醒：保持穩定進展，一次優化一小步 🚀"
-}
-
-# === [6] 產生報告 ===
+# === 產生報告 ===
 generate_report() {
-  echo "📊 產生週報與月報摘要中..."
+  echo "📊 產生報告中..."
   bash "$PROJECT_DIR/weekly_report.sh"
   bash "$PROJECT_DIR/monthly_report.sh"
 }
 
-# === [7] 主選單控制 ===
+# === 主指令入口 ===
 case "$1" in
   start)
     start_auto
@@ -92,7 +94,8 @@ case "$1" in
     show_help
     ;;
   *)
-    echo "❌ 無效指令：$1"
+    echo "❌ 未知指令：$1"
     show_help
     ;;
 esac
+
