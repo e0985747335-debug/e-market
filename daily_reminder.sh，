@@ -1,0 +1,23 @@
+#!/bin/bash
+# === 🌅 e-Market 自動開發日誌提醒系統 ===
+
+PROJECT_DIR="/home/iven/e-market"
+LOG_SCRIPT="$PROJECT_DIR/update_log.sh"
+TIME_NOW=$(date +"%Y-%m-%d %H:%M:%S")
+
+cd "$PROJECT_DIR" || exit 1
+
+echo "🕘 [$TIME_NOW] 開始檢查今日開發日誌..."
+
+# 執行智慧日誌更新
+bash "$LOG_SCRIPT"
+
+# 檢查是否成功更新或略過
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "🔔 提醒：請記得繼續撰寫今日開發進度 ✍️"
+  echo "🚀 專案位置：$PROJECT_DIR"
+  echo "🧠 讓每一天的進步都有紀錄。"
+else
+  echo "⚠️ 發生錯誤，請檢查 update_log.sh 腳本。"
+fi
