@@ -1,0 +1,20 @@
+{
+  "name": "e-market",
+  "version": "1.0.0",
+  "description": "> 「打造屬於本地的數位菜市場。」",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e0985747335-debug/e-market.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/e0985747335-debug/e-market/issues"
+  },
+  "homepage": "https://github.com/e0985747335-debug/e-market#readme"
+}
