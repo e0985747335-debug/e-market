@@ -1,13 +1,45 @@
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
+
+export default function DashboardPage() {
+  // ✅ 明確指定泛型
+  const chartRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = chartRef.current;
+    if (!canvas) return; // 沒有 canvas 就不執行
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return; // 沒有 context 時跳出
+
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["一月", "二月", "三月", "四月"],
+        datasets: [
+          {
+            label: "銷售量",
+            data: [12, 19, 3, 5],
+            backgroundColor: "rgba(75, 192, 192, 0.5)",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
+
+    return () => {
+      chart.destroy();
+    };
+  }, []);
+
   return (
-    <div className="text-center mt-16">
-      <h1 className="text-4xl font-bold">歡迎來到 🧠 e-Market</h1>
-      <p className="text-gray-600 mt-4">打造屬於本地的數位菜市場 — 讓消費者與生產者直接交易。</p>
-      <Link href="/market" className="inline-block mt-6 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-        進入市集
-      </Link>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <canvas ref={chartRef} width={400} height={200}></canvas>
     </div>
   );
 }
