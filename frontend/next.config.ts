@@ -1,12 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ✅ 明確使用 Turbopack，解決錯誤
-  turbopack: {},
-
-  // ✅ 移除 webpack 舊設定（Next.js 16 不需要）
-  // webpack: (config) => config,
-
+  turbopack: {}, // ✅ 新版 Next.js 16 預設使用 Turbopack
+  reactCompiler: false, // ✅ 關閉 React Compiler（原本在 experimental.reactCompiler）
   images: {
     remotePatterns: [
       {
