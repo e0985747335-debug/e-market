@@ -1,14 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ✅ 將 reactCompiler 移出 experimental
-  reactCompiler: false, // 如果不使用 React Compiler，就設為 false
+  // ✅ 不使用實驗選項
+  reactCompiler: false,
 
-  webpack: (config) => {
-    // ✅ 使用 Webpack 而不是 Turbopack
-    return config;
-  },
+  // ✅ 新增 turbopack 空設定（解決錯誤）
+  turbopack: {},
 
+  // ✅ 圖片設定照舊
   images: {
     remotePatterns: [
       {
