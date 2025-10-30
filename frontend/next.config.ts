@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  turbopack: {}, // ✅ 新版 Next.js 16 預設使用 Turbopack
-  reactCompiler: false, // ✅ 關閉 React Compiler（原本在 experimental.reactCompiler）
+  turbopack: {}, // ✅ 開啟 Turbopack 模式
+  reactCompiler: false, // ✅ 關閉 React Compiler
   images: {
     remotePatterns: [
       {
